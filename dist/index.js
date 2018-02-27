@@ -102,7 +102,6 @@ function extendInterface(matchedInterface, interfacePath, newElements, values, i
             var interfaceDir = interfacePathParts[1];
             var interfaceExtension = interfacePathParts.pop().indexOf('.d.ts') >= 0 ? '.d.ts' : '.ts';
             interfacePath = "./" + (importPathParts[0] === '.' ? interfaceDir + '/' : null) + importFile + interfaceExtension;
-            console.log(interfacePath);
             matchedExtendedInterface = getInterface(interfacePath, extendedInterfaceName);
         }
         extendInterface(matchedExtendedInterface, interfacePath, newElements, values);
