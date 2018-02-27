@@ -181,8 +181,24 @@ function setObjectElements(prop, filename, newElements, values, typeDef) {
 function extendInterface(matchedInterface: InterfaceDeclaration, interfacePath, newElements, values, inttype?) {
   const extendedInterface = matchedInterface.getExtends()[0];
   if (extendedInterface) {
-    const extendedInterfaceName = matchedInterface.getExtends()[0].compilerNode.expression.getText();
-    const matchedExtendedInterface = getInterface(interfacePath, extendedInterfaceName);
+    const extendedInterfaceName = extendedInterface.compilerNode.expression.getText();
+    let matchedExtendedInterface = getInterface(interfacePath, extendedInterfaceName);
+    // if no match then we get imported interfaces
+    if (!matchedExtendedInterface) {
+      const interfaceFile = ast.getOrAddSourceFile(interfacePath);
+      const importPath = interfaceFile.getInterfaces()[0].getSourceFile().getText().match(
+        new RegExp(`import .*${extendedInterfaceName}.*`),
+      )[0].match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0].replace(/['"]/g, '');
+      const importPathParts = importPath.split('/');
+      const importFile = importPathParts.slice(1).join('');
+
+      const interfacePathParts = interfacePath.split('/');
+      const interfaceDir = interfacePathParts[1];
+      const interfaceExtension = interfacePathParts.pop().indexOf('.d.ts') >= 0 ? '.d.ts' : '.ts';
+
+      interfacePath = `./${importPathParts[0] === '.' ? interfaceDir + '/' : null}${importFile}${interfaceExtension}`;
+      matchedExtendedInterface = getInterface(interfacePath, extendedInterfaceName);
+    }
     extendInterface(matchedExtendedInterface, interfacePath, newElements, values);
     setInterfaceElements(matchedExtendedInterface, interfacePath, newElements, values, inttype);
   }
