@@ -45,6 +45,7 @@ function setInterfaceElements(matchedInterface, filename, newElements, values, i
     extendInterface(matchedInterface, filename, newElements, values, inttype);
     matchedInterface.getProperties().forEach(function (prop) {
         var typeDef = inttype ? inttype + "." + prop.getName() : prop.getName();
+        var propName = typeDef.substr(typeDef - 1) === '?' ? '[' + typeDef + ']' : typeDef;
         var descriptionPrefix = inttype ? inttype + " > " : '';
         var propDocNode = prop.getDocNodes()[0];
         var propComment = propDocNode ? propDocNode.getComment() : prop.getName();
@@ -56,7 +57,7 @@ function setInterfaceElements(matchedInterface, filename, newElements, values, i
             var isArray = propType.includes('[]');
             propLabel = 'Object' + (isArray ? '[]' : '');
         }
-        newElements.push(getParam("{" + capitalize(propLabel) + "} " + typeDef + " " + description, values.element));
+        newElements.push(getParam("{" + capitalize(propLabel) + "} " + propName + " " + description, values.element));
         if (propTypeIsObject) {
             var typeInterface = getInterface(filename, propType.replace('[]', ''));
             if (typeInterface) {

@@ -101,7 +101,8 @@ function setInterfaceElements(matchedInterface: InterfaceDeclaration, filename, 
   matchedInterface.getProperties().forEach((prop) => {
 
     // set param type definition and description
-    const typeDef = inttype ? `${inttype}.${prop.getName()}` : prop.getName();
+    const typeDef: any = inttype ? `${inttype}.${prop.getName()}` : prop.getName();
+    const propName = typeDef.substr(typeDef - 1) === '?' ? '[' + typeDef + ']' : typeDef;
     const descriptionPrefix = inttype ? `${inttype} > ` : '';
     const propDocNode = prop.getDocNodes()[0];
     const propComment = propDocNode ? propDocNode.getComment() : prop.getName();
@@ -123,7 +124,7 @@ function setInterfaceElements(matchedInterface: InterfaceDeclaration, filename, 
     }
 
     // set the element
-    newElements.push(getParam(`{${capitalize(propLabel)}} ${typeDef} ${description}`, values.element));
+    newElements.push(getParam(`{${capitalize(propLabel)}} ${propName} ${description}`, values.element));
 
     // if property is an object or interface then we need to also display the objects properties
     if (propTypeIsObject) {
