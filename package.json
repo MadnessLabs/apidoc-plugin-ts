@@ -8,12 +8,12 @@
   ],
   "scripts": {
     "apidoc": "apidoc -i test/ -o test/out",
-    "copy:plugin": "rm -rf node_modules/apidoc-plugin-ts && copyfiles package.json './dist/**/*' node_modules/apidoc-plugin-ts/",
+    "copy:plugin": "rimraf node_modules/apidoc-plugin-ts && copyfiles package.json './dist/**/*' node_modules/apidoc-plugin-ts/",
     "lint": "tslint --project tsconfig.json",
     "test": "mocha -r ts-node/register test/**/test.ts",
-    "prepare": "rm -rf dist && tsc -p src/tsconfig.json",
+    "prepare": "rimraf dist && tsc -p src/tsconfig.json",
     "prepublishOnly": "npm run prepare && npm run lint && npm run test",
-    "pretest": "rm -rf test/out && npm run copy:plugin && npm run apidoc"
+    "pretest": "rimraf test/out && npm run copy:plugin && npm run apidoc"
   },
   "author": "Tom Grey",
   "license": "MIT",
@@ -43,6 +43,7 @@
     "chai": "^4.1.2",
     "copyfiles": "^1.2.0",
     "mocha": "^4.0.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^4.0.1",
     "tslint": "^5.8.0"
   },
